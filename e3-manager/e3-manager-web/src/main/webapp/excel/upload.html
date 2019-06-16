@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <meta>
+    </head>
+<html>
+<body>
+
+	<form>
+	  <input type="file" name="fileup" id="uploadEventFile" v-on:change="fileChange($event)" style="display:none" />
+	</form>
+	<button v-on:click="importData($event)" class="imptbtn">导入excel</button>
+	<button v-on:click="download()" class="imptbtn">下载</button>
+
+</body>
+</html>

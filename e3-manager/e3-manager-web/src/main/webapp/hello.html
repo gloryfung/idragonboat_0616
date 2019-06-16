@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+<!--         <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+        <script src="./lib/vue.js"></script>
+        <link href= "css/hello.css" rel="stylesheet">
+        <meta>
+    </head>
+<body>
+
+    <div id="showMsg">
+        {{ message }}
+    </div>
+
+    <script>
+        var msg = new Vue({
+            el:'#showMsg',
+            data: {
+                message : "Hello world !!"
+            }
+        })
+    </script>
+
+    <div id="myGame">
+        <h3>游戏列表</h3>
+        <div v-if="seen">2018最新热卖</div>
+        <ol>
+            <li v-for="game in games">
+                {{game.title}} / {{game.price}} 元
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        var myGame = new Vue( {
+            el:'#myGame',
+            data:{
+                seen:true, //如果false，元素不会加载到dom
+                games:[
+                    {title:'超级马里奥', price:'99'},
+                    {title:'英雄联盟', price:'238'},
+                    {title:'大金刚', price:'345'}
+                ]
+            }
+
+        })
+    </script>
+    
+    <!-- 3动态绑定 -->
+    <div id="myFavorite">
+    	<p>输入的是：{{ favoriteGame }}</p>
+    	<input v-model="favoriteGame" >
+    </div>
+    <script>
+    	var myFavorite = new Vue ({
+    		el:'#myFavorite',
+    		data:{
+    			favoriteGame : '三国杀'
+    		},
+    	});
+    </script>
+    
+    
+    <!-- 4.点击按钮触发事件 -->
+    <div id="sport">
+    	<p>你喜欢的运动是：{{ favoriteSport }}</p>
+    	<button v-on:click="btnClick('basketball')">basketball</button>
+    	<button v-on:click="btnClick('football')">football</button>
+    	<button v-on:click="btnClick('tennis')">tennis</button>
+    </div>
+    <script>
+    	var sport = new Vue({
+    		el:'#sport',
+    		data:{
+    			favoriteSport:'basketball'
+    		},
+    		methods:{
+    			btnClick:function(sp) {
+    				this.favoriteSport = sp;
+    			}
+    		}
+    	})
+    </script>
+    
+    <!-- 组件 -->
+    <div id="subject">
+    	<ol>
+	    	<param-subject v-for="item in subjects" v-bind:sjb="item"></param-subject>
+    	</ol>
+    </div>
+    <script>
+    	Vue.component('param-subject', {
+    		props:['sjb'],
+    		template:'<li>{{ sjb.name }}</li>'
+    	});
+    	
+    	var subject = new Vue({
+    		el:'#subject',
+    		data:{
+    			subjects:[
+	    			{name:'math'},
+	    			{name:'english'},
+	    			{name:'science'}
+	    		]
+    		}
+    	});
+    </script>
+    
+    <!-- 过滤 -->
+    <div id='learn'>
+    	<p>{{ msg }}</p>
+    	<p>{{ msg | toUpper }}</p>
+    	<hr>
+    	<p>当前进度为{{ num }}({{ num | toPercentage }})</p>
+    </div>
+    <script>
+    	var learn = new Vue({
+    		el:'#learn',
+    		data:{
+    			msg:'how to learn vue?',
+    			num: 0.3
+    		},
+    		filters: {
+    			toUpper:function(value) {
+    				return value.toUpperCase();
+    			},
+    			toPercentage:function(value) {
+    				return value * 100 + "%";
+    			}
+    		}
+    	})
+    </script>
+    
+    <hr>
+    <!-- 计算/观察 -->
+    <div id="cacu">
+    	<p>iphone xs约合{{ dollar }} 美元，含税价为{{ dollarTax }}美元，折合人民币为{{ rmb }} 元</p>
+    	<button @click="btnClick(120)">加价120美元</button>
+    </div>
+    
+    <script>
+    	var cacu = new Vue({
+    		el:'#cacu',
+    		data:{
+    			dollar: 2000,
+    		},
+			computed : {
+				dollarTax: function() {
+					return this.dollar * 1.05;
+				},
+    			rmb: function () {
+    				return Math.round(this.dollarTax * 6.2);
+    			}
+			}, 
+			watch: {
+				dollar: function (newVal, oldVal) {
+					console.log(newVal, oldVal);
+					this.dollarTax = newVal * 1.05;
+					this.rmb = Math.round(newVal * 1.05 * 6.2);
+				}
+			},
+			methods: {
+				btnClick: function(newVal) {
+					this.dollar += newVal;
+				}
+			}
+			
+    	})
+    </script>
+    
+    <hr>
+    
+    <div id="changeColor">
+    	<div v-bind:class="{active:isActive}">文本颜色展示</div>
+    	<div :class="{active:isActive}">文本颜色展示</div>
+    	<button @click="btnClick">改变颜色</button>
+    </div>
+    <script>
+    	var changeColor = new Vue ({
+    		el: '#changeColor',
+    		data: {
+    			isActive : true,
+    		},
+    		methods : {
+    			btnClick: function () {
+    				this.isActive = !this.isActive;
+    			}
+    		}
+    	})
+    </script>
+    
+    <hr>
+    <!-- 绑定class对象 -->
+    <div id="bindClass">
+    	<div :class="myclass">这是class对象绑定</div>
+    	<button @click="btnClick">改变class的样式</button>
+    </div>
+   <script>
+   		var bindClass = new Vue({
+   			el:'#bindClass',
+   			data: {
+   				myclass: {
+   					active:true,
+   					big: true
+   				}
+   			},
+			methods: {
+				btnClick : function() {
+					this.myclass.big = !this.myclass.big;
+				}
+			}   				
+   		})
+   </script> 
+   
+   <!-- 条件渲染 -->
+   <div id="condition">
+   		<div v-if="result <= 0">{{ result }}分成绩未公布</div>
+   		<div v-else-if="result < 60">{{ result }} 成绩不及格</div>
+   		<div v-else-if="result < 80">{{ result }} 良好</div>
+   		<div v-else="result >= 90">{{ result }} 优秀</div>
+   		<div v-show="present">游戏机</div>
+   		<button @click="btnClick">获取成绩</button>
+   </div>
+   <script>
+   		var condition = new Vue ({
+   			el:'#condition',
+   			data: {
+   				result : 0,
+   				present:false
+   			},
+			methods : {
+				btnClick : function() {
+					this.result = Math.round(Math.random() * 100);
+					if (this.result >= 80) {
+						this.present = true;
+					} else {
+						this.present = false;
+					}
+				} 
+			}   			
+   		})
+   </script>
+   
+   <div>
+		<div id="myFood">
+			<div v-for="(value,key) in foods">
+				{{key}}:{{value}}
+			</div>
+		</div>   
+   </div>
+   <script>
+   		var myFood = new Vue({
+   			el:'#myFood',
+   			data:{
+   				foods:{
+   					name:"apple",
+   					price:"5yuan",
+   					color:"red"
+   				}
+   			}
+   		})
+   </script>
+   
+   <hr>
+   <!-- 双向绑定 -->
+   <div id='bidirectional'>
+   		<input type="text" v-model="message" placeholder="请输入文本" />
+   		<div>{{ message }}</div>
+   </div>
+   <script>
+   		var bidirectional = new Vue({
+   			el:'#bidirectional',
+   			data: {
+   				message: "我喜欢雪糕"	
+   			}
+   		})
+   </script>
+   
+	<hr>
+	<div id="chkbox">
+		<div>复选框</div>
+		<input type="checkbox" id="marry" value="marry" v-model="checkedNames"/>
+		<!-- for的作用是点击label标签，可以选中对象 -->
+		<label for="marry">Marry</label>
+		<input type="checkbox" id="jack" value="jack" v-model="checkedNames"/>
+		<label for="jack">Jack</label>
+		<input type="checkbox" id="carrie" value="carrie" v-model="checkedNames"/>
+		<label for="carrie">Carrie</label>
+		<br>
+		<div>选择的人名有：{{ checkedNames }}</div>
+	</div>
+	<script>
+		var chkbox = new Vue({
+			el:'#chkbox',
+			data:{
+				checkedNames:[]
+			},
+			methods: {
+				
+			}
+		})
+	</script>
+	
+	<hr>
+	<div id="keyInfo">
+		<h3>单选框--请选择性别</h3>
+		<input type="radio" id="boy" value="boy" v-model="sex"/>
+		<label for="boy">男</label>
+		<input type="radio" id="girl" value="girl" v-model="sex"/>
+		<label for="girl">女</label>
+		<br>
+		<div>选择的性别是：{{ sex }}</div>
+		
+	</div>
+	<script>
+		var keyInfo = new Vue({
+			el:'#keyInfo',
+			data:{
+				sex:""
+			}
+		})
+	</script>	
+	
+	<hr>
+	<div id="allstart">
+		<h3>下拉框 -- 选择篮球明星</h3>
+		<select v-model="basketballstart">
+		<option>kobe</option>
+		<option>tracy</option>
+		<option>ai</option>
+		</select>
+		<br>
+		<div>我最喜欢的nba明星是：{{ basketballstart }} </div>
+	</div>
+	<script>
+		var allstart = new Vue({
+			el:'#allstart',
+			data:{
+				basketballstart:""
+			}
+		})
+		
+	</script>
+	
+	<hr>
+	<div id="skill">
+		<div>注册名称：</div>
+		<input type="text" id="registerName"  v-model.lazy="registerName" @change="registerNameChange"/>
+		<div>年龄：</div>
+		<input type="numeber" id="registerAge" v-model.number="registerAge" />
+		<div>说明：</div>
+		<textarea id="content" v-model.trim="content" cols="55" rows="8"></textarea>
+		
+		<div>注册名字是：{{ registerName }}</div>
+		<div>注册年龄是：{{ registerAge }}</div>
+		<div>注册内容是：{{ content }}</div>
+	</div>
+	<script>
+		var skill = new Vue({
+			el:'#skill',
+			data: {
+				registerName:"",
+				registerAge:"",
+				content:""
+			},
+			methods: {
+				registerNameChange : function(){
+					this.registerName = this.registerName;
+				}
+			}
+		})
+	</script>
+	
+	<!-- 组件 -->
+	<div id="weather">
+		<hr>
+		<today-weather></today-weather>
+		<my-weather></my-weather>
+	</div>
+	<script>
+		Vue.component('today-weather',{
+			template:'<div>2019-04-01天气突然转冷</div>'
+		});
+		var myweather = {
+			template:'<div>2019-04-01无语</div>'
+		};
+		var weather = new Vue({
+			el:'#weather',
+			data: {},
+			components: {
+				'my-weather' : myweather
+			}
+		});
+		
+	</script>
+	
+	<hr>
+	<div id="transfer">
+		<div>为控件传递变量</div>
+		<input id="name" type="text"  v-model="myName"/>
+		<transfer-cop :pname="myName" />
+	</div>
+	
+	<script>
+		Vue.component('transfer-cop',{
+			props:['pname'],
+			template:'<div>你好，{{ pname }}</div>'
+		})
+		
+		var transfer = new Vue({
+			el:'#transfer',
+			data: {
+				myName:"kero"
+			}
+		
+		})
+	</script>
+	
+	<hr>
+	<!-- 触发事件，并将数据提交给事件的侦听者 -->
+	<div id='listenC'>
+		<listen-com :a="6" :b="99" v-on:add_event="getResult" />
+		<div>{{ addResult }}</div>
+	</div>
+	<script>
+		Vue.component:('',{
+			props:['a','b'],
+			template:'<div><button v-on:click="add" />加法</button></div>',
+			methods:{
+				add:function() {
+					var value = 0;
+					value = this.a + this.b;
+					this.$emit('add_event',{
+						addResult:value;
+					})
+				}
+			}
+		})
+		var listenC = new Vue({
+			el:'#listenC',
+			data: {
+				addResult: 0
+			},
+			methods : {
+				getResult : function(pval) {
+					this.addResult = pval.addResult;
+				}
+			}
+		})
+		
+	</script>
+
+</body>
+</html>
