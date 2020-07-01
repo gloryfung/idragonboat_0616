@@ -34,7 +34,7 @@
 		<zkclient.version>0.1</zkclient.version>
 		<activemq.version>5.11.2</activemq.version>
 		<freemarker.version>2.3.23</freemarker.version>
-		<quartz.version>2.2.3</quartz.version>
+		<quartz.version>2.3.2</quartz.version>
 		<quartz-jobs.version>2.2.3</quartz-jobs.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<javax.mail.version>1.6.1</javax.mail.version>
